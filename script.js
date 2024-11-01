@@ -9,7 +9,11 @@ let currentOperation = null;
 const operationsArr = ['+', '-', '×', '/'];
 
 function appendNumber(number) {
-    if(number == '.' && countOccurrences(currentInput, '.') == 2 ) return;
+    if(number == '.' && countOccurrences(currentInput, '.') == 2) return;
+    if(currentInput.includes('..')) {
+        currentInput = currentInput.replace('..', '.')
+    }
+
     if(currentInput == '0' && number != '.') {
         return
     } else if(currentInput == '' && number == '.') {
@@ -110,11 +114,21 @@ function calculate() {
             result = divide(firstOperand, secondOperand);
             break;
     }
-    result = result.toFixed(6)
+    result = checkIfGreaterThan6Digits(result)
     updateHistory(currentInput)
     currentInput = String(result)
     updateDisplay(result)
     reset()
+}
+
+function checkIfGreaterThan6Digits(resultStr) {
+    resultStr = String(resultStr)
+    const decimalIndex = String(resultStr).indexOf('.');
+    if (decimalIndex !== -1 && resultStr.length - decimalIndex - 1 > 8) {
+        resultStr = parseFloat(resultStr).toFixed(8);
+        return resultStr;
+    }
+    return parseFloat(resultStr)
 }
 
 //Operations
