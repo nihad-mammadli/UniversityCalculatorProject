@@ -9,13 +9,27 @@ let currentOperation = null;
 const operationsArr = ['+', '-', '×', '/'];
 
 function appendNumber(number) {
-    if(number == '.' && currentInput.includes('.')) return;
+    if(number == '.' && countOccurrences(currentInput, '.') == 2 ) return;
     if(currentInput == '0' && number != '.') {
         return
+    } else if(currentInput == '' && number == '.') {
+        currentInput += '0' 
+        currentInput += number
+        updateDisplay(currentInput)
     } else {
         currentInput += number;
         updateDisplay(currentInput)
     }
+}
+
+function countOccurrences(str, element) {
+    let count = 0;
+    for (let i = 0; i <= str.length - element.length; i++) {
+        if (str.slice(i, i + element.length) === element) {
+            count++;
+        }
+    }
+    return count;
 }
 
 function setOperation(operation) {
@@ -33,7 +47,7 @@ function setOperation(operation) {
         currentOperation = operation
         appendNumber(operation)
     } else if(operation == '%') {
-        currentInput = parseFloat(currentInput) / 100;
+        currentInput = (parseFloat(currentInput) / 100).toFixed(6);
         updateDisplay(currentInput);
     } else {
         firstOperand = parseFloat(currentInput);
@@ -96,6 +110,7 @@ function calculate() {
             result = divide(firstOperand, secondOperand);
             break;
     }
+    result = result.toFixed(6)
     updateHistory(currentInput)
     currentInput = String(result)
     updateDisplay(result)
